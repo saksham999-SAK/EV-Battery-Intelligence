@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+
+const BASE_URL = import.meta.env.VITE_API_URL || "https://ev-battery-intelligence.onrender.com";
 import {
   CartesianGrid,
   Line,
@@ -111,7 +113,7 @@ function App() {
 
   const loadBatteries = async (preferredBattery?: string) => {
     try {
-      const response = await fetch("/batteries");
+      const response = await fetch(`${BASE_URL}/batteries`);
       const data = await response.json();
       const batteries = data.batteries ?? [];
 
@@ -150,8 +152,8 @@ function App() {
     const loadBatteryAnalytics = async () => {
       try {
         const [historyResponse, forecastResponse] = await Promise.all([
-          fetch(`/battery-history/${selectedBattery}`),
-          fetch(`/battery-forecast/${selectedBattery}`),
+          fetch(`${BASE_URL}/battery-history/${selectedBattery}`),
+          fetch(`${BASE_URL}/battery-forecast/${selectedBattery}`),
         ]);
 
         if (!historyResponse.ok || !forecastResponse.ok) {
@@ -179,7 +181,7 @@ function App() {
     setLoading(true);
 
     try {
-      const response = await fetch("/predict", {
+      const response = await fetch(`${BASE_URL}/predict`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -199,7 +201,7 @@ function App() {
         anomaly_status: data.anomaly_status,
       });
 
-      const explainResponse = await fetch("/explain", {
+      const explainResponse = await fetch(`${BASE_URL}/explain`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -236,7 +238,7 @@ function App() {
     formData.append("file", uploadFile);
 
     try {
-      const response = await fetch("/upload-battery", {
+      const response = await fetch(`${BASE_URL}/upload-battery`, {
         method: "POST",
         body: formData,
       });
